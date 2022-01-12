@@ -1,0 +1,17 @@
+Woodcutting = {
+    "Sentinel outfit" : 1.05,
+    "Nature sentinel outfit" : 1.07,
+    "Lumberjack aura" : 1.03,
+    "Greater lumberjack aura" : 1.05,
+    "Master lumberjack aura" : 1.07,
+    "Supreme lumberjack aura" : 1.10,
+    "Legendary lumberjack aura" : 1.15,
+    "Cobalt skillchompa" : 1.01,
+    "Viridian skillchompa" : 1.02,
+    "Azure skillchompa" : 1.03,
+    "Crimson skillchompa" : 1.04,
+    "Crystal skillchompa" : 1.05,
+    "Ring of whispers" : 1.03,
+    "Overgrown idols" : 1.10,
+    "Tier 8 imperical district reprutation" : 1.10,
+}
