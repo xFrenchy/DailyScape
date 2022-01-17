@@ -3,13 +3,15 @@ import locale   # to convert numbers from string to int with comma
 from logging import raiseExceptions
 from requests.api import request
 from os.path import exists
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from Daily.daily import Daily
-from Resources.util import price_to_int, api_url, retrieve_item
+from Resources.util import price_to_int, api_url, price_to_str, retrieve_item
 from Resources.GID_Historic import GID_Historic1, GID_Historic2
 from Resources.GID import GID
 from Resources.GID_Generated_Historic import GID_generated
+
+G_RUNE_CATEGORY = 32    # category 32 is 'Runes, Spells and Teleports' for API request
 
 class RuneInfo:
     def __init__(self) -> None:
@@ -162,10 +164,10 @@ class Viswax(Daily):
     
     # Function that predicts the first rune slot for max viswax and max profit
     def predict_first_slot(self):
-        #TODO: today date should be based on UTC and not local timezone
-        str_today = date.isoformat(date.today())
+        str_today = date.isoformat(datetime.utcnow().date())
         try:
             self.slot1.max_viswax.GID = self.GID_generated[str_today][0]
+            #TODO: max profit can't be calculated until I find a way to predict what the hiearchy is, aka which runes have a value of 30 and then 29 etc
         except KeyError:
             #TODO
             #self.update_generated_historic()   # When this function is implemented, call it lol
@@ -175,7 +177,7 @@ class Viswax(Daily):
             self.load_generated_historic()
             self.slot1.max_viswax.GID = self.GID_generated[str_today]
         self.slot1.max_viswax.name = self.GID_dict[self.slot1.max_viswax.GID]["name"]
-        rune = retrieve_item(self.slot1.max_viswax.name + " rune", 32)    # category 32 is 'Runes, Spells and Teleports' for API request
+        rune = retrieve_item(self.slot1.max_viswax.name + " rune", G_RUNE_CATEGORY)    
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         try:
             self.slot1.max_viswax.price = locale.atoi(rune['current']['price']) * self.GID_dict[self.slot1.max_viswax.GID]["base"]
@@ -183,10 +185,8 @@ class Viswax(Daily):
             self.slot1.max_viswax.price = rune['current']['price'] * self.GID_dict[self.slot1.max_viswax.GID]["base"]
         #TODO: calculate first slot max profit
 
-
     def predict_second_slot(self):
-        #TODO: today date should be based on UTC and not local timezone
-        str_today = date.isoformat(date.today())
+        str_today = date.isoformat(datetime.utcnow().date())
         try:
             gid_list = self.GID_generated[str_today][1]
             self.slot2[0].max_viswax.GID = gid_list[0]
@@ -199,9 +199,9 @@ class Viswax(Daily):
         self.slot2[0].max_viswax.name = self.GID_dict[self.slot2[0].max_viswax.GID]["name"]
         self.slot2[1].max_viswax.name = self.GID_dict[self.slot2[1].max_viswax.GID]["name"]
         self.slot2[2].max_viswax.name = self.GID_dict[self.slot2[2].max_viswax.GID]["name"]
-        rune1 = retrieve_item(self.slot2[0].max_viswax.name + " rune", 32)    # category 32 is 'Runes, Spells and Teleports' for API request
-        rune2 = retrieve_item(self.slot2[1].max_viswax.name + " rune", 32)    # category 32 is 'Runes, Spells and Teleports' for API request
-        rune3 = retrieve_item(self.slot2[2].max_viswax.name + " rune", 32)    # category 32 is 'Runes, Spells and Teleports' for API request
+        rune1 = retrieve_item(self.slot2[0].max_viswax.name + " rune", G_RUNE_CATEGORY)
+        rune2 = retrieve_item(self.slot2[1].max_viswax.name + " rune", G_RUNE_CATEGORY)
+        rune3 = retrieve_item(self.slot2[2].max_viswax.name + " rune", G_RUNE_CATEGORY)
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         try:
             self.slot2[0].max_viswax.price = locale.atoi(rune1['current']['price']) * self.GID_dict[self.slot2[0].max_viswax.GID]["base"]
@@ -221,3 +221,26 @@ class Viswax(Daily):
     def predict_third_slot(self):
         self.slot3.max_viswax.name = "?"
         self.slot3.max_viswax.price = "?"
+
+    def cheap_attempts(self):
+        """This function will give the user some options of which runes to try
+        Assuming that slot 1 and slot 2 are too expensive"""
+        options = {}
+        #TODO: Optimize this loop, having 20 API calls really slows it down
+        for key, value in self.GID_dict.items():
+            # look up price from the name
+            rune_resp = retrieve_item(value['name'] + " rune", G_RUNE_CATEGORY)
+            # base * price = total
+            try:
+                options[value['name']] = int(locale.atoi(rune_resp['current']['price']) * value['base'])
+            except AttributeError:
+                options[value['name']] = int(rune_resp['current']['price'] * value['base'])
+        
+        # Sort on from least to greatest 
+        result = dict(sorted(options.items(), key=lambda item: item[1]))
+        iter = 0
+        for key, value in result.items():
+            print(key + " - " + price_to_str(value))
+            iter += 1
+            if iter >= 11:
+                break

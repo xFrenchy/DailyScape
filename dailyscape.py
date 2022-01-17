@@ -24,6 +24,8 @@ if __name__ == '__main__':
     "\n        ", viswax_obj.slot2[1].max_viswax.name, "\tTotal: ", price_to_str(viswax_obj.slot2[1].max_viswax.price),
     "\n        ", viswax_obj.slot2[2].max_viswax.name, "\tTotal: ", price_to_str(viswax_obj.slot2[2].max_viswax.price))
     print("Slot 3: ", viswax_obj.slot3.max_viswax.name, "\tTotal: ", viswax_obj.slot3.max_viswax.price, "\t Use your runecrafting skillcape if you have it :)\n")
+    print("If the above runes are too expensive, try out these recommendations")
+    viswax_obj.cheap_attempts()
 
 #Bloodwood tree
     bloodwood_obj = Bloodwoodtree()
