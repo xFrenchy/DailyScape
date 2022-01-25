@@ -119,6 +119,8 @@ class Viswax(Daily):
             assert today_GID > -1, "predicted GID is negative!"
             assert today_GID < 20, "predicated GID is out of range!"
 
+            self.GID_historic[date.isoformat(start)] = today_GID
+
             # Slot 2 prediction
             old_gid = self.GID_historic2[date.isoformat(start - timedelta(days=40))]
             new_gid = [0,0,0]
@@ -138,10 +140,11 @@ class Viswax(Daily):
                    val = 19
                 new_gid[i] = val
 
+            self.GID_historic2[date.isoformat(start)] = new_gid
+
             # Attach GID to date, move forward
             f.write('"' + start.isoformat() + '" : [' + str(today_GID) + ", " + str(new_gid) + "],\n")
-            self.GID_historic[date.isoformat(start)] = today_GID
-            self.GID_historic2[date.isoformat(start)] = new_gid
+            
             day += 1
             try:
                 start = date(year, month, day)
