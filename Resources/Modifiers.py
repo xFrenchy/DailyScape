@@ -1,4 +1,4 @@
-Woodcutting = {
+Woodcutting_Dict = {
     "Sentinel outfit" : 1.05,
     "Nature sentinel outfit" : 1.07,
     "Lumberjack aura" : 1.03,
