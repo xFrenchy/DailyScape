@@ -7,7 +7,7 @@ import math
 from Daily.daily import Daily
 
 from Resources.util import retrieve_item, price_to_int, price_to_str
-from Resources.Modifiers import Woodcutting
+from Resources.Modifiers import Woodcutting_Dict
 #TODO: implement modifiers
 
 class Bloodwoodtree(Daily):
@@ -26,8 +26,8 @@ class Bloodwoodtree(Daily):
     
     def apply_modifer(self):
         # 4 different types of modifers, level modifier, low chance, high chance, both low and high
-        self.high *= Woodcutting["Nature sentinel outfit"]
-        self.high *= Woodcutting["Legendary lumberjack aura"]
+        self.high *= Woodcutting_Dict["Nature sentinel outfit"]
+        self.high *= Woodcutting_Dict["Legendary lumberjack aura"]
         return
 
     def rawroll(self):
