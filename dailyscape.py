@@ -1,3 +1,4 @@
+from sympy import BlockDiagMatrix
 from VisWax.viswax import Viswax
 from BloodWoodTree.bloodwoodtree import Bloodwoodtree
 from Resources.util import price_to_str
