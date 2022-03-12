@@ -7,6 +7,7 @@ from datetime import date, datetime
 from Resources.Items import Item_Dict
 
 api_url = "https://services.runescape.com/m=itemdb_rs/api/catalogue/"
+G_RUNE_CATEGORY = 32    # category 32 is 'Runes, Spells and Teleports' for API request
 
 def price_to_int(price):
     """Converts a string representation of a price into an integer
@@ -28,7 +29,7 @@ def price_to_str(price):
     For example, 15_300 will be 15.3k and 15_000_000 will be 15m
     and returns the string"""
     if price < 1000:
-        return str(price + "gp")
+        return str(price) + "gp"
     else:
         million = int(price/1_000_000)
         price = price % 1_000_000
@@ -40,6 +41,7 @@ def price_to_str(price):
         return (str(million) + "." + str(thousand) + "m", str(thousand) + "." + str(price) + "k") [million == 0]
 
 def retrieve_item(name, category):
+    #TODO it's adding duplicates, this check must be checking an object instead of value, fix it
     if name not in Item_Dict.keys():
         # add this item in our dictionary
         item = search_item(name, category)
@@ -58,7 +60,6 @@ def retrieve_item(name, category):
             add_item(name, item)
             return item
             
-
 def search_item(name, category):
     found = False
     page = 0
@@ -89,3 +90,4 @@ def add_item(name, item):
         f.write("\'" + name + "\': " + str(item) + ",\n")
         f.write("}")
         f.close()
+
