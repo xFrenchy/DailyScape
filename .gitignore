@@ -1,5 +1,6 @@
 __pycache__/
 Backup/
 UnitTest/
-GID_Generated_Historic.py
+Resources/GID_Generated_Historic.py
+Resources/Items.py
 InternalNote.txt
