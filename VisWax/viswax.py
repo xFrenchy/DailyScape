@@ -6,12 +6,12 @@ from os.path import exists
 from datetime import date, timedelta, datetime
 
 from Daily.daily import Daily
-from Resources.util import price_to_int, api_url, price_to_str, retrieve_item
+from Resources.util import price_to_int, api_url, price_to_str, retrieve_item, G_RUNE_CATEGORY
 from Resources.GID_Historic import GID_Historic1, GID_Historic2
 from Resources.GID import GID
 from Resources.GID_Generated_Historic import GID_generated
 
-G_RUNE_CATEGORY = 32    # category 32 is 'Runes, Spells and Teleports' for API request
+
 
 class RuneInfo:
     def __init__(self) -> None:
