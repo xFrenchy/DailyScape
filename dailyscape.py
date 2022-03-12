@@ -1,7 +1,10 @@
 from sympy import BlockDiagMatrix
+
+from Resources.util import price_to_str
+
 from VisWax.viswax import Viswax
 from BloodWoodTree.bloodwoodtree import Bloodwoodtree
-from Resources.util import price_to_str
+from Shop.RuneShop import RuneShopRun
 
 if __name__ == '__main__':
     print("Welcome to DailyScape, here are today's calculations: ")
@@ -31,3 +34,7 @@ if __name__ == '__main__':
 #Bloodwood tree
     bloodwood_obj = Bloodwoodtree()
     bloodwood_obj.display_profit()
+
+#Rune Shop
+    runeshop_obj = RuneShopRun()
+    runeshop_obj.display()
