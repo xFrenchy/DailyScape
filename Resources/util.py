@@ -57,7 +57,8 @@ def retrieve_item(name, category):
         else:
             # damn still have to do an API call
             item = search_item(name, category)
-            add_item(name, item)
+            #update instead of add
+            update_item(name, item)
             return item
             
 def search_item(name, category):
@@ -91,3 +92,20 @@ def add_item(name, item):
         f.write("}")
         f.close()
 
+def update_item(name, item):
+    item['date'] = str_today = date.isoformat(datetime.utcnow().date())
+    with open("Resources/Items.py", "r", encoding = "utf-8") as f:
+        lines = f.readlines()
+        for row in lines:
+            if name in row:
+                lines.remove(row)
+                lines = lines[:-1]  # removing '}' since we are about to append
+                lines.append(str("\'" + name + "\': " + str(item) + ",\n"))
+                break
+    # now we have a list set up with an update line and all the previous ones
+    with open("Resources/Items.py", "w", encoding="utf-8") as f:
+        for line in lines:
+            f.write(line)
+        f.write("}")
+        f.close()
+    return
