@@ -1,4 +1,5 @@
-from sympy import BlockDiagMatrix
+from functools import partial
+import tkinter as tk
 
 from Resources.util import price_to_str
 
@@ -8,33 +9,25 @@ from Shop.RuneShop import RuneShopRun
 
 if __name__ == '__main__':
     print("Welcome to DailyScape, here are today's calculations: ")
-
-#Vis wax
     viswax_obj = Viswax()
-    viswax_obj.get_viswax()
-    print("Viswax gross profit: " + price_to_str(viswax_obj.price * 100))
-    viswax_obj.load_GID()
-    if not viswax_obj.load_generated_historic():
-        print("Generated historic not detected. Let me generate that for you :}\n")
-        viswax_obj.generate_historic()
-    # If we are here, generated historic is guaranteed to exists, let's load it
-    viswax_obj.load_generated_historic()
-    viswax_obj.predict_first_slot()
-    viswax_obj.predict_second_slot()
-    viswax_obj.predict_third_slot()
-    print("\nMax viswax")
-    print("Slot 1: ", viswax_obj.slot1.max_viswax.name, "\tTotal: ", price_to_str(viswax_obj.slot1.max_viswax.price))
-    print("Slot 2: ", viswax_obj.slot2[0].max_viswax.name, "\tTotal: ", price_to_str(viswax_obj.slot2[0].max_viswax.price),
-    "\n        ", viswax_obj.slot2[1].max_viswax.name, "\tTotal: ", price_to_str(viswax_obj.slot2[1].max_viswax.price),
-    "\n        ", viswax_obj.slot2[2].max_viswax.name, "\tTotal: ", price_to_str(viswax_obj.slot2[2].max_viswax.price))
-    print("Slot 3: ", viswax_obj.slot3.max_viswax.name, "\tTotal: ", viswax_obj.slot3.max_viswax.price, "\t Use your runecrafting skillcape if you have it :)\n")
-    print("If the above runes are too expensive, try out these recommendations")
-    viswax_obj.cheap_attempts()
+    bloodwood_obj = Bloodwoodtree()
+    runeshop_obj = RuneShopRun()
+    root = tk.Tk()
+    root.title("DailyScape")
+    '''
+    Widgets are added here
+    '''
+    viswax_button = tk.Button(root, text="Viswax", width=25, activeforeground='DarkOrchid2', activebackground='DarkOrchid4', command=partial(viswax_obj.display, root))
+    viswax_button.pack()
+
+    exit_button = tk.Button(root, text="Exit", width=25, bg='indian red', command=root.destroy)
+    exit_button.pack()
+    root.mainloop()
 
 #Bloodwood tree
-    bloodwood_obj = Bloodwoodtree()
+    
     bloodwood_obj.display_profit()
 
 #Rune Shop
-    runeshop_obj = RuneShopRun()
+    
     runeshop_obj.display()

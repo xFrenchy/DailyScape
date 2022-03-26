@@ -1,5 +1,7 @@
 import requests
 import locale   # to convert numbers from string to int with comma
+import tkinter as tk
+
 from logging import raiseExceptions
 from requests.api import request
 from os.path import exists
@@ -36,6 +38,7 @@ class Viswax(Daily):
         self.slot1 = RuneSlot()
         self.slot2 = [RuneSlot(), RuneSlot(), RuneSlot()]
         self.slot3 = RuneSlot()
+        self.tk_label = None
 
     # Makes an HTTP Get request to the runescape wiki to retrieve Viswax information
     def get_viswax(self):
@@ -247,3 +250,40 @@ class Viswax(Daily):
             iter += 1
             if iter >= 11:
                 break
+
+    def display(self, root):
+        if self.tk_label is None:
+            self.tk_label = tk.Label(root, bg='lemon chiffon')
+            self.tk_label.pack()
+        self.get_viswax()
+        self.load_GID()
+        if not self.load_generated_historic():
+            self.tk_label['text'] = "Generated historic not detected. Let me generate that for you :}"
+            # Console print
+            print("Generated historic not detected. Let me generate that for you :}\n")
+            self.generate_historic()
+        # If we are here, generated historic is guaranteed to exists, let's load it
+        self.load_generated_historic()
+        self.predict_first_slot()
+        self.predict_second_slot()
+        self.predict_third_slot()
+
+        self.tk_label['text'] = ("Viswax gross profit: " + price_to_str(self.price * 100) + "\n\nMax viswax" 
+        + "\nSlot 1: " + self.slot1.max_viswax.name + "\tTotal: " + price_to_str(self.slot1.max_viswax.price) 
+        + "\nSlot 2: " + self.slot2[0].max_viswax.name + "\tTotal: " + price_to_str(self.slot2[0].max_viswax.price) 
+        + "\n        " + self.slot2[1].max_viswax.name + "\tTotal: " + price_to_str(self.slot2[1].max_viswax.price) 
+        + "\n        " + self.slot2[2].max_viswax.name + "\tTotal: " + price_to_str(self.slot2[2].max_viswax.price) 
+        + "\nSlot 3: ", self.slot3.max_viswax.name + "\tTotal: " + self.slot3.max_viswax.price + "\t Use your runecrafting skillcape if you have it :)\n" 
+        + "\nIf the above runes are too expensive, try out these recommendations")
+        
+
+        # Console print
+        print("Viswax gross profit: " + price_to_str(self.price * 100))
+        print("\nMax viswax")
+        print("Slot 1: ", self.slot1.max_viswax.name, "\tTotal: ", price_to_str(self.slot1.max_viswax.price))
+        print("Slot 2: ", self.slot2[0].max_viswax.name, "\tTotal: ", price_to_str(self.slot2[0].max_viswax.price),
+        "\n        ", self.slot2[1].max_viswax.name, "\tTotal: ", price_to_str(self.slot2[1].max_viswax.price),
+        "\n        ", self.slot2[2].max_viswax.name, "\tTotal: ", price_to_str(self.slot2[2].max_viswax.price))
+        print("Slot 3: ", self.slot3.max_viswax.name, "\tTotal: ", self.slot3.max_viswax.price, "\t Use your runecrafting skillcape if you have it :)\n")
+        print("If the above runes are too expensive, try out these recommendations")
+        self.cheap_attempts()
